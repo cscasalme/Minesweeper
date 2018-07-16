@@ -2,43 +2,44 @@ import * as React from 'react';
 
 import Cell from './Cell';
 
-type GridProps {
+interface IGridProps {
   numBombs: number;
   size: [number, number]
 }
 
-type GridState {
+interface IGridState {
   cells: Cell[][];
   numBombsLeft: number;
 }
 
-class Grid extends React.Component<GridProps, GridState> {
+class Grid extends React.Component<IGridProps, IGridState> {
 
   constructor(props: GridProps) {
     super(props);
     this.state = {
-      numBombsLeft: this.props.numBombs,
-      cells: createBoard(this.props.size, this.props.numBombs)
+      cells: createBoard(this.props.size, this.props.numBombs),
+      numBombsLeft: this.props.numBombs
     };
 
   }
 
   function createBoard(size: [number, number], numBombs: number): Cell[][] {
     // populate bombs array with random locations in grid
-    let bombs: Array<[number, number]> = [];
+    let bombs: Array<[number, number]>;
+    bombs = [];
     for(let i = 0; i < numBombs; i++) {
       let duplicate: boolean = false;
       // initialize random x and y
-      const x: number = Math.floor(Math.random() * size[0]);
-      const y: number = Math.floor(Math.random() * size[1]);
+      let x: number = Math.floor(Math.random() * size[0]);
+      let y: number = Math.floor(Math.random() * size[1]);
       // check if there is a bomb already there
-      if (bombs.some(x => x === [x,y])) {
+      if (bombs.some(elem => elem === [x,y])) {
         duplicate = true;
       }
       // loop until a non duplicate bomb location has been found
       while (duplicate) {
-        const x: number = Math.floor(Math.random() * size[0]);
-        const y: number = Math.floor(Math.random() * size[1]);
+        x = Math.floor(Math.random() * size[0]);
+        y = Math.floor(Math.random() * size[1]);
         if (bombs.some(elem => elem === [x,y])) {
           duplicate = true;
         }
@@ -46,16 +47,18 @@ class Grid extends React.Component<GridProps, GridState> {
       bombs.push([x,y]);
     }
 
-    let cells: Cell[][] = [];
+    let cells: Cell[][];
+    cells = [];
 
     // populate actual cell matrix
     for(let i = 0; i < size[0]; i++) {
-      let row: Cell[] = [];
+      let row: Cell[];
+      row = [];
       for(let j = 0; j < size[1]; j++) {
-        if (bombs.includes([i,j])) {
-          row.push(new Cell(true));
+        if (bombs.some(x => x === [x,y])) {
+          row.push(new Cell({ hasBomb: true}));
         } else {
-          row.push(new Cell(false));
+          row.push(new Cell({ hasBomb: false}));
         }
       }
       cells.push(row);

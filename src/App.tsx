@@ -3,7 +3,7 @@ import './styles/App.css';
 
 import logo from './assets/logo.svg';
 
-//import Cell from './Cell';
+// import Cell from './Cell';
 
 class App extends React.Component {
 

@@ -1,25 +1,25 @@
 import * as React from 'react';
 
-type CellProps {
+interface ICellProps {
   hasBomb: boolean
 }
 
-type CellState {
-  isOpened: boolean
+interface ICellState {
   isFlagged: boolean
+  isOpened: boolean
 }
 
-class Cell extends React.Component<CellProps, CellState> {
+class Cell extends React.Component<ICellProps, ICellState> {
 
   constructor(props: CellProps) {
     super(props);
     this.state = {
-      isOpened: false,
-      isFlagged: false
+      isFlagged: false,
+      isOpened: false
     }
   }
 
-   onClick(e: React.MouseEvent<HTMLButtonElement>) {
+   private onClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (e.type === 'click') {
       alert('Left click');
     } else if (e.type === 'contextmenu') {
@@ -29,7 +29,7 @@ class Cell extends React.Component<CellProps, CellState> {
 
   public render() {
 
-    var className: string;
+    let className: string;
     // check what kind of cell should be rendered
     if (this.state.isFlagged) {
       className = "cell-flag"
