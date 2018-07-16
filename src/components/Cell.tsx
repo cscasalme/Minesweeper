@@ -1,49 +1,50 @@
 import * as React from 'react';
 
 type CellProps {
+  hasBomb: boolean
 }
 
 type CellState {
   isOpened: boolean
-  isBomb: boolean
   isFlagged: boolean
 }
 
-class Cell extends React.Component<CellProps> {
+class Cell extends React.Component<CellProps, CellState> {
 
   constructor(props: CellProps) {
     super(props);
     this.state = {
       isOpened: false,
-      isBomb: false,
       isFlagged: false
     }
   }
 
-  private handleClick(e: React.MouseEvent<HTMLButtonElement>) => {
+   onClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (e.type === 'click') {
-      console.log('Left click');
+      alert('Left click');
     } else if (e.type === 'contextmenu') {
-      console.log('Right click');
+      alert('Right click');
     }
   }
 
   public render() {
 
-    var className: string = ""
+    var className: string;
     // check what kind of cell should be rendered
-    if (this.isflagged == true) {
-      className = cell-flag
-    } else if (this.isOpened == true) {
-      className = cell-open
-    } else if (this.isBomb == true && this.isOpened == true) {
-      className = cell-explode
+    if (this.state.isFlagged) {
+      className = "cell-flag"
+    } else if (this.state.isOpened) {
+      className = "cell-open"
+    } else if (this.props.hasBomb && this.state.isOpened) {
+      className = "cell-explode"
+    } else {
+      className = "cell-closed"
     }
 
     return (
         <button
           className={className}
-          onClick={this.handleClick}
+          onClick={this.onClick}
         >
           {"click me"}
         </button>
