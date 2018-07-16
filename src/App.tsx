@@ -3,7 +3,10 @@ import './styles/App.css';
 
 import logo from './assets/logo.svg';
 
+//import Cell from './Cell';
+
 class App extends React.Component {
+
   public render() {
     return (
       <div className="App">
