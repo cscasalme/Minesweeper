@@ -1,29 +1,54 @@
 import * as React from 'react';
 
+import '../styles/Cell.css';
+
 interface ICellProps {
-  hasBomb: boolean
+  hasBomb: boolean;
 }
 
 interface ICellState {
-  isFlagged: boolean
-  isOpened: boolean
+  isFlagged: boolean;
+  isOpened: boolean;
 }
 
 class Cell extends React.Component<ICellProps, ICellState> {
 
-  constructor(props: CellProps) {
+  constructor(props: ICellProps) {
     super(props);
     this.state = {
       isFlagged: false,
       isOpened: false
     }
+
+    this.onClick = this.onClick.bind(this);
+    this.openCell = this.openCell.bind(this);
   }
 
-   private onClick(e: React.MouseEvent<HTMLButtonElement>) {
+  public openCell() {
+    this.setState({
+      isFlagged: false,
+      isOpened: true,
+    });
+  }
+
+  public onClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (e.type === 'click') {
-      alert('Left click');
+      // if user tried to open flagged cell
+      if (!this.state.isFlagged && !this.state.isOpened) {
+        this.openCell()
+        this.setState({
+          isFlagged: false,
+          isOpened: true,
+        });
+      }
     } else if (e.type === 'contextmenu') {
-      alert('Right click');
+      // if user tried to open flagged cell
+      if (!this.state.isFlagged && !this.state.isOpened) {
+        this.setState({
+          isFlagged: true,
+          isOpened: false,
+        });
+      }
     }
   }
 
@@ -46,7 +71,7 @@ class Cell extends React.Component<ICellProps, ICellState> {
           className={className}
           onClick={this.onClick}
         >
-          {"click me"}
+          {}
         </button>
     );
   }
