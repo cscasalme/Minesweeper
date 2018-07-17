@@ -4,7 +4,7 @@ import './styles/App.css';
 import Grid from './components/Grid';
 import Menu from './components/Menu';
 
-import logo from './assets/logo.svg';
+import logo from './assets/regular_shibe.png';
 
 class App extends React.Component {
 
@@ -12,8 +12,8 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <img src={logo} className="regular_shibe" alt="logo" />
+          <h1 className="App-title">Minesweeper</h1>
         </header>
         <div className="menu" >
           <Menu header={"Grid Size"} items={ ["6x6 grid and 5 bombs",

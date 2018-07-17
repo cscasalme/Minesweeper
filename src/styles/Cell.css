@@ -1,5 +1,4 @@
 .cell-closed {
-   border: 1px outset blue;
    background-color: darkBlue;
    height:50px;
    width:50px;
@@ -7,8 +6,14 @@
 }
 
 .cell-open {
-   border: 1px outset blue;
    background-color: lightBlue;
+   height:50px;
+   width:50px;
+   cursor:pointer;
+}
+
+.cell-explode {
+   background-color: white;
    height:50px;
    width:50px;
    cursor:pointer;

@@ -51,7 +51,7 @@ class Menu extends React.Component<IMenuProps, IMenuState>  {
         {
           this.state.isVisible
             ? (
-              <div className="menu">
+              <div>
                 {this.props.items.map(item => (
                   <button className={"menu-button"}
                     onClick={this.optionClick}
