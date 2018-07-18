@@ -46,7 +46,7 @@ class Menu extends React.Component<IMenuProps, IMenuState>  {
             ? (
               <div>
                 {this.props.items.map(item => (
-                  <button className={"menu-button"}
+                  <button key={this.props.header + item} className={"menu-button"}
                     onClick={this.props.onValueChange.bind(this,item)}
                   >
                     {item}

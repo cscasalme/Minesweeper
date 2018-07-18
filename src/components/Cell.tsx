@@ -23,6 +23,7 @@ class Cell extends React.Component<ICellProps, ICellState> {
     }
 
     this.onClick = this.onClick.bind(this);
+    this.render = this.render.bind(this);
   }
 
   public onClick(e: React.MouseEvent<HTMLButtonElement>) {

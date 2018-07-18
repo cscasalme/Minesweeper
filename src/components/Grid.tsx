@@ -1,67 +1,14 @@
 import * as React from 'react';
 
 import Cell from './Cell';
-import Position from './Position';
 
 interface IGridProps {
+  cells: Cell[][];
   numBombs: number;
-  size: [number, number];
 }
 
 interface IGridState {
-  cells: Cell[][];
   numBombsLeft: number;
-}
-
-// Helper Function
-function createBoard(size: [number, number], numBombs: number): Cell[][] {
-  // populate bombs array with random locations in grid
-  let bombs: Position[];
-  bombs = [];
-  for(let i = 0; i < numBombs; i++) {
-    let duplicate: boolean = false;
-    // initialize random x and y
-    const x: number = Math.floor(Math.random() * size[0]);
-    const y: number = Math.floor(Math.random() * size[1]);
-    const pos: Position = new Position(x, y);
-    // check if there is a bomb already there
-    if (bombs.some(elem => elem === pos)) {
-      duplicate = true;
-    }
-    // loop until a non duplicate bomb location has been found
-    while (duplicate) {
-      const newx: number = Math.floor(Math.random() * size[0] + 1);
-      const newy: number = Math.floor(Math.random() * size[1] + 1);
-      const newpos: Position = new Position(newx, newy);
-      // check if there is a bomb already there
-      if (bombs.some(elem => elem.x === newpos.x && elem.y === newpos.y)) {
-        duplicate = true;
-      }
-    }
-
-    bombs.push(pos);
-  }
-
-  let cells: Cell[][];
-  cells = [];
-
-  let s: number = 0
-  // populate actual cell matrix
-  for(let i = 0; i < size[0]; i++) {
-    let row: Cell[];
-    row = [];
-    for(let j = 0; j < size[1]; j++) {
-      const pos: Position = new Position(i, j);
-      if (bombs.some(elem => elem.x === pos.x && elem.y === pos.y)) {
-        s = s+1;
-        row.push(new Cell({ hasBomb: true}));
-      } else {
-        row.push(new Cell({ hasBomb: false}));
-      }
-    }
-    cells.push(row);
-  }
-  return cells;
 }
 
 class Grid extends React.Component<IGridProps, IGridState> {
@@ -70,11 +17,8 @@ class Grid extends React.Component<IGridProps, IGridState> {
     super(props);
 
     this.state = {
-      cells: createBoard(this.props.size, this.props.numBombs),
       numBombsLeft: this.props.numBombs,
     };
-
-    this.updateBoard = this.updateBoard.bind(this);
   }
 
   public onClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -85,22 +29,14 @@ class Grid extends React.Component<IGridProps, IGridState> {
      }
   }
 
-  public updateBoard(numBombs: number, size: [number, number]) {
-    this.setState({
-      cells: createBoard(size, numBombs),
-      numBombsLeft: numBombs,
-    });
-  }
-
   public render() {
-    alert("cells");
-    alert(this.state.cells[0].length);
+    alert(this.props.cells.length);
     return (
       <div className="grid">
-        {this.state.cells.map((row, i) => (
-          <div key={i} className="row">
-            {row.map(cell => (
-              <Cell hasBomb={cell.props.hasBomb}/>
+        {this.props.cells.map((row, x) => (
+          <div key={x.toString()} className="row">
+            {row.map((cell, y) => (
+              <Cell key={x.toString() + y.toString()} hasBomb={cell.props.hasBomb}/>
             ))}
           </div>
         ))}
