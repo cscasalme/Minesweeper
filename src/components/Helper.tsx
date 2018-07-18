@@ -1,17 +1,4 @@
-import * as React from 'react';
-
-import Cell from './Cell';
-import Position from './Position';
-
-interface IGridProps {
-  numBombs: number;
-  size: [number, number];
-}
-
-interface IGridState {
-  cells: Cell[][];
-  numBombsLeft: number;
-}
+import Cell from './components/Cell'
 
 // Helper Function
 function createBoard(size: [number, number], numBombs: number): Cell[][] {
@@ -63,50 +50,4 @@ function createBoard(size: [number, number], numBombs: number): Cell[][] {
   }
   return cells;
 }
-
-class Grid extends React.Component<IGridProps, IGridState> {
-
-  constructor(props: IGridProps) {
-    super(props);
-
-    this.state = {
-      cells: createBoard(this.props.size, this.props.numBombs),
-      numBombsLeft: this.props.numBombs,
-    };
-
-    this.updateBoard = this.updateBoard.bind(this);
-  }
-
-  public onClick(e: React.MouseEvent<HTMLButtonElement>) {
-     if (e.type === 'click') {
-       alert('Left click');
-     } else if (e.type === 'contextmenu') {
-       alert('Right click');
-     }
-  }
-
-  public updateBoard(numBombs: number, size: [number, number]) {
-    this.setState({
-      cells: createBoard(size, numBombs),
-      numBombsLeft: numBombs,
-    });
-  }
-
-  public render() {
-    alert("cells");
-    alert(this.state.cells[0].length);
-    return (
-      <div className="grid">
-        {this.state.cells.map((row, i) => (
-          <div key={i} className="row">
-            {row.map(cell => (
-              <Cell hasBomb={cell.props.hasBomb}/>
-            ))}
-          </div>
-        ))}
-      </div>
-
-    );
-  }
-}
-export default Grid;
+export default Helper;

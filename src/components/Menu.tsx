@@ -5,7 +5,7 @@ import '../styles/Menu.css';
 interface IMenuProps {
   header: string;
   items: string[];
-  selection: string;
+  onValueChange: any;
 }
 
 interface IMenuState {
@@ -37,24 +37,17 @@ class Menu extends React.Component<IMenuProps, IMenuState>  {
      }
   }
 
-  public optionClick(e: React.MouseEvent<HTMLButtonElement>) {
-    if (e.type === 'click') {
-      // if user tried to open flagged cell
-      alert("hi");
-    }
-  }
-
   public render() {
     return (
       <div>
-        <button className="game-options" onClick={this.menuClick}>{this.props.header}</button>
+        <button className={"game-options"} onClick={this.menuClick}>{this.props.header}</button>
         {
           this.state.isVisible
             ? (
               <div>
                 {this.props.items.map(item => (
                   <button className={"menu-button"}
-                    onClick={this.optionClick}
+                    onClick={this.props.onValueChange.bind(this,item)}
                   >
                     {item}
                   </button>
