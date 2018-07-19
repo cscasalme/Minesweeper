@@ -156,6 +156,10 @@ class App extends React.Component<any, IAppState> {
           <Menu header={"Rows"} items={ ["6","8","10"]} onValueChange={this.updateRowValue}/>
           <Menu header={"Columns"} items={ ["6","8","10"]} onValueChange={this.updateColValue}/>
           <Menu header={"Bombs"} items={ ["5","10","30"]} onValueChange={this.updateBombsValue}/>
+          <div className = "instructions">
+            <h4>Left click to open</h4>
+            <h4>Right click to flag</h4>
+          </div>
           &nbsp;
           <div className="grid">
             {this.state.status !== "Game Over" && this.state.status !== "Victory" ? (
