@@ -14,6 +14,7 @@ interface IAppState {
   numFlags: number;
   numOpened: number;
   rows: number;
+  status: string;
 }
 
 class App extends React.Component<any, IAppState> {
@@ -23,15 +24,29 @@ class App extends React.Component<any, IAppState> {
 
     this.state = {
       columns: 6,
-      grid: new Grid({columns: 6, numBombs: 5, rows: 6}),
+      grid: new Grid({columns: 6, numBombs: 5, rows: 6, onValueChange: this.updateStatusValue}),
       numBombs: 5,
       numFlags: 0,
       numOpened: 0,
       rows: 6,
+      status: "playing",
     };
     this.updateBombsValue = this.updateBombsValue.bind(this);
     this.updateRowValue = this.updateRowValue.bind(this);
     this.updateColValue = this.updateColValue.bind(this);
+    this.updateStatusValue = this.updateStatusValue.bind(this);
+  }
+
+  public updateStatusValue(newStatus: string) {
+    this.setState({
+      columns: this.state.columns,
+      grid: new Grid({columns: this.state.columns, numBombs:this.state.numBombs, rows: this.state.rows, onValueChange:this.updateStatusValue}),
+      numBombs: this.state.numBombs,
+      numFlags: this.state.numFlags,
+      numOpened: this.state.numOpened,
+      rows: this.state.rows,
+      status: newStatus,
+    });
   }
 
   public updateBombsValue(bombs: string) {
@@ -45,11 +60,12 @@ class App extends React.Component<any, IAppState> {
     }
     this.setState({
       columns: this.state.columns,
-      grid: new Grid({columns: this.state.columns, numBombs: newBombs, rows: this.state.rows}),
+      grid: new Grid({columns: this.state.columns, numBombs: newBombs, rows: this.state.rows, onValueChange:this.updateStatusValue}),
       numBombs: newBombs,
       numFlags: this.state.numFlags,
       numOpened: this.state.numOpened,
       rows: this.state.rows,
+      status: "playing",
     });
   }
 
@@ -65,11 +81,12 @@ class App extends React.Component<any, IAppState> {
     this.setState((prevState, props) => {
       return {
         columns: prevState.columns,
-        grid: new Grid({columns: this.state.columns, numBombs: this.state.numBombs, rows: newRows}),
+        grid: new Grid({columns: this.state.columns, numBombs: this.state.numBombs, rows: newRows, onValueChange:this.updateStatusValue}),
         numBombs: prevState.numBombs,
         numFlags: prevState.numFlags,
         numOpened: prevState.numOpened,
         rows: newRows,
+        status: "playing",
       }
     });
   }
@@ -86,11 +103,12 @@ class App extends React.Component<any, IAppState> {
     this.setState((prevState, props) => {
       return {
         columns: newCols,
-        grid: new Grid({columns: newCols, numBombs: this.state.numBombs, rows: this.state.rows}),
+        grid: new Grid({columns: newCols, numBombs: this.state.numBombs, rows: this.state.rows, onValueChange:this.updateStatusValue}),
         numBombs: prevState.numBombs,
         numFlags: prevState.numFlags,
         numOpened: prevState.numOpened,
         rows: prevState.rows,
+        status: "playing",
       }
     });
   }
@@ -103,11 +121,17 @@ class App extends React.Component<any, IAppState> {
           <img src={logo} className="regular_shibe" alt="logo" />
           <h1 className="App-title">Minesweeper</h1>
         </header>
-        <div className="menu" >
+        <div className="menu">
           <Menu header={"Rows"} items={ ["6","8","10"]} onValueChange={this.updateRowValue}/>
           <Menu header={"Columns"} items={ ["6","8","10"]} onValueChange={this.updateColValue}/>
           <Menu header={"Bombs"} items={ ["5","10","30"]} onValueChange={this.updateBombsValue}/>
-          <Grid columns={this.state.columns} numBombs={this.state.numBombs} rows={this.state.rows}/>
+          <div className="grid">
+            {this.state.status !== "defeat" ? (
+              <Grid columns={this.state.columns} numBombs={this.state.numBombs} rows={this.state.rows} onValueChange={this.updateStatusValue}/>
+            ) : (
+              <h1 className="defeat">GAME OVER</h1>
+            )}
+          </div>
         </div>
       </div>
     );

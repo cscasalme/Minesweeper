@@ -6,6 +6,7 @@ import Position from './Position';
 interface IGridProps {
   columns: number;
   numBombs: number;
+  onValueChange: any;
   rows: number;
 }
 
@@ -24,12 +25,50 @@ class Grid extends React.Component<IGridProps, IGridState> {
 
     this.createBoard = this.createBoard.bind(this);
     this.cellClick = this.cellClick.bind(this);
+    this.isValidPosition = this.isValidPosition.bind(this);
+  }
+
+  public isValidPosition(row: number, column: number) {
+    if (row < 0 || column < 0 || row >= this.props.rows || column >= this.props.columns) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   public cellClick(props: any, type: string) {
     const newCells = this.state.cells;
 
-    if (type === 'left') {
+    if (type === 'continue') {
+      if (!props.hasBomb && !props.isFlagged && !props.isOpened) {
+        const oldCell: Cell = newCells[props.row][props.column]
+        newCells[props.row][props.column] = new Cell({column: oldCell.props.column,
+                                                      hasBomb: oldCell.props.hasBomb,
+                                                      hasExploded: oldCell.props.hasExploded,
+                                                      isFlagged: oldCell.props.isFlagged,
+                                                      isOpened: true,
+                                                      numMinesAround: oldCell.props.numMinesAround,
+                                                      onValueChange: this.cellClick,
+                                                      row: oldCell.props.row})
+
+        this.setState({
+          cells: newCells,
+        });
+        if (props.numMinesAround === 0 ) {
+          for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+              if (i !== 0 || j !== 0) {
+                const newRow: number = props.row + i;
+                const newColumn: number = props.column + j;
+                if (this.isValidPosition(newRow, newColumn)) {
+                  this.cellClick(newCells[newRow][newColumn].props, "continue");
+                }
+              }
+            }
+          }
+        }
+      }
+    } else if (type === 'left') {
       // Do not allow the user to open a flagged cell
       // If cell is unflagged and has bomb, then it explodes
       if (props.hasBomb && !props.isFlagged && !props.isOpened) {
@@ -39,17 +78,38 @@ class Grid extends React.Component<IGridProps, IGridState> {
                                                       hasExploded: true,
                                                       isFlagged: oldCell.props.isFlagged,
                                                       isOpened: true,
+                                                      numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
-      } else if (!props.isFlagged && !props.isOpened) {
+        this.setState({
+          cells: newCells,
+        });
+        this.props.onValueChange("defeat")
+      } else if (!props.hasBomb && !props.isFlagged && !props.isOpened) {
         const oldCell: Cell = newCells[props.row][props.column]
         newCells[props.row][props.column] = new Cell({column: oldCell.props.column,
                                                       hasBomb: oldCell.props.hasBomb,
                                                       hasExploded: oldCell.props.hasExploded,
                                                       isFlagged: oldCell.props.isFlagged,
                                                       isOpened: true,
+                                                      numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
+
+        this.setState({
+          cells: newCells,
+        });
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            if (i !== 0 || j !== 0) {
+              const newRow: number = props.row + i;
+              const newColumn: number = props.column + j;
+              if (this.isValidPosition(newRow, newColumn)) {
+                this.cellClick(newCells[newRow][newColumn].props, "continue");
+              }
+            }
+          }
+        }
       }
     } else if (type === 'right') {
       // If cell is unopened and has not been flagged, flag it
@@ -61,6 +121,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
                                                       hasExploded: oldCell.props.hasExploded,
                                                       isFlagged: true,
                                                       isOpened: oldCell.props.isFlagged,
+                                                      numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
       } else if (props.isFlagged && !props.isOpened) {
@@ -70,41 +131,58 @@ class Grid extends React.Component<IGridProps, IGridState> {
                                                       hasExploded: oldCell.props.hasExploded,
                                                       isFlagged: false,
                                                       isOpened: oldCell.props.isFlagged,
+                                                      numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
       }
+      this.setState({
+        cells: newCells,
+      });
     }
-    this.setState({
-      cells: newCells,
-    });
   }
 
   public createBoard(size: [number, number], numBombs: number): Cell[][] {
     // populate bombs array with random locations in grid
     let bombs: Position[];
     bombs = [];
-    for(let i = 0; i < numBombs; i++) {
-      let duplicate: boolean = false;
+    while (bombs.length < numBombs) {
       // initialize random x and y
-      const x: number = Math.floor(Math.random() * size[0]);
-      const y: number = Math.floor(Math.random() * size[1]);
-      let pos: Position = new Position(x, y);
+      const x: number = Math.floor(Math.random() * (size[0]));
+      const y: number = Math.floor(Math.random() * (size[1]));
+      const pos: Position = new Position(x, y);
       // check if there is a bomb already there
-      if (bombs.some(elem => elem === pos)) {
-        duplicate = true;
+      if (!bombs.some(elem => elem.x === pos.x && elem.y === pos.y)) {
+        bombs.push(pos);
       }
-      // loop until a non duplicate bomb location has been found
-      while (duplicate) {
-        const newx: number = Math.floor(Math.random() * size[0] + 1);
-        const newy: number = Math.floor(Math.random() * size[1] + 1);
-        pos = new Position(newx, newy);
-        // check if there is a bomb already there
-        if (bombs.some(elem => elem.x === pos.x && elem.y === pos.y)) {
-          duplicate = true;
+    }
+
+    let numMinesArray: number[][];
+    numMinesArray = [];
+
+    // initialize numMinesArray to be 0
+    for(let i = 0; i < size[0]; i++) {
+      let row: number[];
+      row = [];
+      for(let j = 0; j < size[1]; j++) {
+        row.push(0)
+      }
+      numMinesArray.push(row);
+    }
+
+    // iterate through bombs array setting the numMines array
+    bombs.forEach((bomb) => {
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i !== 0 || j !== 0) {
+            const newX: number = bomb.x + i;
+            const newY: number = bomb.y + j;
+            if (newX >= 0 && newY >= 0 && newX < size[0] && newY < size[1]) {
+              numMinesArray[newX][newY] = numMinesArray[newX][newY] + 1
+            }
+          }
         }
       }
-      bombs.push(pos);
-    }
+    });
 
     let cells: Cell[][];
     cells = [];
@@ -120,6 +198,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
                    hasExploded: false,
                    isFlagged: false,
                    isOpened: false,
+                   numMinesAround: numMinesArray[i][j],
                    onValueChange: this.cellClick,
                    row: i}));
         } else {
@@ -128,6 +207,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
                    hasExploded: false,
                    isFlagged: false,
                    isOpened: false,
+                   numMinesAround: numMinesArray[i][j],
                    onValueChange: this.cellClick,
                    row: i}));
         }
@@ -159,6 +239,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
                     hasExploded={cell.props.hasExploded}
                     isFlagged={cell.props.isFlagged}
                     isOpened={cell.props.isOpened}
+                    numMinesAround={cell.props.numMinesAround}
                     onValueChange={this.cellClick}
                     row={x}/>
             ))}

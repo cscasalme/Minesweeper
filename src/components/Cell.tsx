@@ -9,6 +9,7 @@ interface ICellProps {
   isFlagged: boolean;
   isOpened: boolean;
   onValueChange: any;
+  numMinesAround: number;
   row: number;
 }
 
@@ -22,9 +23,9 @@ class Cell extends React.Component<ICellProps, any> {
 
   public onClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (e.type === 'click') {
-      this.props.onValueChange(this.props, "left")
+      this.props.onValueChange(this.props, "left");
     } else if (e.type === 'contextmenu') {
-      this.props.onValueChange(this.props, "right")
+      this.props.onValueChange(this.props, "right");
     }
   }
 
@@ -33,13 +34,13 @@ class Cell extends React.Component<ICellProps, any> {
     let className: string;
     // check what kind of cell should be rendered
     if (this.props.isFlagged) {
-      className = "cell-flag"
+      className = "cell-flag";
     } else if (this.props.hasExploded) {
-      className = "cell-explode"
+      className = "cell-explode";
     } else if (this.props.isOpened) {
-      className = "cell-open"
+      className = "cell-open";
     } else {
-      className = "cell-closed"
+      className = "cell-closed";
     }
 
     return (
@@ -47,7 +48,7 @@ class Cell extends React.Component<ICellProps, any> {
           className={className}
           onClick={this.onClick}
         >
-          {}
+         { this.props.isOpened === true && this.props.numMinesAround !== 0 ? this.props.numMinesAround: ""}
         </button>
     );
   }
