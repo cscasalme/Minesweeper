@@ -104,7 +104,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
           cells: newCells,
           numFlags: this.state.numFlags,
         });
-        this.props.onValueChange("defeat")
+        this.props.onValueChange("Game Over")
       } else if (!props.hasBomb && !props.isFlagged && !props.isOpened) {
         const oldCell: Cell = newCells[props.row][props.column]
         newCells[props.row][props.column] = new Cell({column: oldCell.props.column,
@@ -151,7 +151,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
         });
         const numOpen: number = this.numOpened();
         if ((this.props.rows * this.props.columns-1) === (numOpen + this.state.numFlags)) {
-          this.props.onValueChange("victory")
+          this.props.onValueChange("Victory")
         }
       } else if (props.isFlagged && !props.isOpened) {
         const oldCell: Cell = newCells[props.row][props.column]

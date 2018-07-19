@@ -2,19 +2,19 @@
   text-align: center;
 }
 
-.regular-shibe{
+.App-logo{
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
 }
 
 .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+  background-color: #A9A9A9;
+  padding: 5px;
   color: white;
 }
 
-.App-title {
+.timer {
+  background-color: #A9A9A9;
   font-size: 1.5em;
 }
 

@@ -16,7 +16,7 @@
 
 .cell-flag {
    background: url("../assets/waving-flag-.png") center no-repeat;
-   background-color: red;
+   background-color: darkGrey;
    height:50px;
    width:50px;
    cursor:pointer;

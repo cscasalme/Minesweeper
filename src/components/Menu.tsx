@@ -21,6 +21,7 @@ class Menu extends React.Component<IMenuProps, IMenuState>  {
     };
 
     this.menuClick = this.menuClick.bind(this);
+    this.closeMenu = this.closeMenu.bind(this);
   }
 
   public menuClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -29,12 +30,16 @@ class Menu extends React.Component<IMenuProps, IMenuState>  {
          this.setState({
            isVisible: true,
          });
-       } else {
-         this.setState({
-           isVisible: false,
-         });
+         document.addEventListener('click', this.closeMenu);
        }
      }
+  }
+
+  public closeMenu() {
+    this.setState({
+      isVisible: false,
+    });
+    document.removeEventListener('click', this.closeMenu);
   }
 
   public render() {

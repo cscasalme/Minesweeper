@@ -5,16 +5,18 @@ import './styles/App.css';
 import Grid from './components/Grid';
 import Menu from './components/Menu';
 
-import logo from './assets/regular_shibe.png';
+import logo from './assets/bomb-72.png';
 
 interface IAppState {
   columns: number;
   grid: Grid;
+  interval: any;
   numBombs: number;
   numFlags: number;
   numOpened: number;
   rows: number;
   status: string;
+  time: number;
 }
 
 class App extends React.Component<any, IAppState> {
@@ -25,12 +27,15 @@ class App extends React.Component<any, IAppState> {
     this.state = {
       columns: 6,
       grid: new Grid({columns: 6, numBombs: 5, rows: 6, onValueChange: this.updateStatusValue}),
+      interval: setInterval(() => this.tick(), 1000),
       numBombs: 5,
       numFlags: 0,
       numOpened: 0,
       rows: 6,
       status: "playing",
+      time: 0,
     };
+
     this.updateBombsValue = this.updateBombsValue.bind(this);
     this.updateRowValue = this.updateRowValue.bind(this);
     this.updateColValue = this.updateColValue.bind(this);
@@ -41,6 +46,7 @@ class App extends React.Component<any, IAppState> {
     this.setState({
       columns: this.state.columns,
       grid: new Grid({columns: this.state.columns, numBombs:this.state.numBombs, rows: this.state.rows, onValueChange:this.updateStatusValue}),
+      interval: this.state.interval,
       numBombs: this.state.numBombs,
       numFlags: this.state.numFlags,
       numOpened: this.state.numOpened,
@@ -66,6 +72,7 @@ class App extends React.Component<any, IAppState> {
       numOpened: this.state.numOpened,
       rows: this.state.rows,
       status: "playing",
+      time: 0,
     });
   }
 
@@ -87,6 +94,7 @@ class App extends React.Component<any, IAppState> {
         numOpened: prevState.numOpened,
         rows: newRows,
         status: "playing",
+        time: 0,
       }
     });
   }
@@ -109,8 +117,26 @@ class App extends React.Component<any, IAppState> {
         numOpened: prevState.numOpened,
         rows: prevState.rows,
         status: "playing",
+        time: 0,
       }
     });
+  }
+
+
+
+  public tick() {
+    if (this.state.status === "playing") {
+      this.setState(prevState => ({
+        columns: this.state.columns,
+        grid: this.state.grid,
+        numBombs: this.state.numBombs,
+        numFlags: this.state.numFlags,
+        numOpened: this.state.numOpened,
+        rows: this.state.rows,
+        status: "playing",
+        time: this.state.time + 1,
+      }));
+    }
   }
 
   public render() {
@@ -118,17 +144,21 @@ class App extends React.Component<any, IAppState> {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="regular_shibe" alt="logo" />
+          <div className="App-logo">
+            <img src={logo} className="bomb" alt="logo" />
+          </div>
           <h1 className="App-title">Minesweeper</h1>
         </header>
         <div className="menu">
-          <div>
+          <div className="timer">
+            Time: {this.state.time}
+          </div>
           <Menu header={"Rows"} items={ ["6","8","10"]} onValueChange={this.updateRowValue}/>
-        </div>
           <Menu header={"Columns"} items={ ["6","8","10"]} onValueChange={this.updateColValue}/>
           <Menu header={"Bombs"} items={ ["5","10","30"]} onValueChange={this.updateBombsValue}/>
+          &nbsp;
           <div className="grid">
-            {this.state.status !== "defeat" && this.state.status !== "victory" ? (
+            {this.state.status !== "Game Over" && this.state.status !== "Victory" ? (
               <Grid columns={this.state.columns} numBombs={this.state.numBombs} rows={this.state.rows} onValueChange={this.updateStatusValue}/>
             ) : (
               <h1 className="status">{this.state.status}</h1>

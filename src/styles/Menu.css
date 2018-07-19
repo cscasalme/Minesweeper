@@ -2,7 +2,7 @@
     display: block;
     width: 100%;
     border: 2px;
-    background-color: #222;
+    background-color: #A9A9A9;
     padding: 14px 28px;
     font-size: 16px;
     cursor: pointer;
@@ -10,7 +10,7 @@
     outline: none;
 }
 .menu-button {#222
-    background-color: #222;
+    background-color: #A9A9A9;
     color       : #000000;
     height      : 21px;
     line-height : 21px;
