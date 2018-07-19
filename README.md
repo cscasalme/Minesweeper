@@ -1,4 +1,5 @@
 MINESWEEPER GAME
+____________________________________
 
 CONTENTS OF THIS FILE
 ---------------------
