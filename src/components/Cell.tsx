@@ -25,6 +25,7 @@ class Cell extends React.Component<ICellProps, any> {
     if (e.type === 'click') {
       this.props.onValueChange(this.props, "left");
     } else if (e.type === 'contextmenu') {
+      e.preventDefault()
       this.props.onValueChange(this.props, "right");
     }
   }
@@ -47,6 +48,7 @@ class Cell extends React.Component<ICellProps, any> {
         <button
           className={className}
           onClick={this.onClick}
+          onContextMenu={this.onClick}
         >
          { this.props.isOpened === true && this.props.numMinesAround !== 0 ? this.props.numMinesAround: ""}
         </button>

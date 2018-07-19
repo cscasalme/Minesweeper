@@ -1,15 +1,26 @@
 .cell-closed {
-   background-color: darkBlue;
+   background-color: darkGrey;
    height:50px;
    width:50px;
    cursor:pointer;
+   vertical-align:top;
 }
 
 .cell-open {
-   background-color: lightBlue;
+   background-color: white;
    height:50px;
    width:50px;
    cursor:pointer;
+   vertical-align:top;
+}
+
+.cell-flag {
+   background: url("../assets/waving-flag-.png") center no-repeat;
+   background-color: red;
+   height:50px;
+   width:50px;
+   cursor:pointer;
+   vertical-align:top;
 }
 
 .cell-explode {
@@ -17,4 +28,5 @@
    height:50px;
    width:50px;
    cursor:pointer;
+   vertical-align:top;
 }

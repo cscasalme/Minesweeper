@@ -122,14 +122,16 @@ class App extends React.Component<any, IAppState> {
           <h1 className="App-title">Minesweeper</h1>
         </header>
         <div className="menu">
+          <div>
           <Menu header={"Rows"} items={ ["6","8","10"]} onValueChange={this.updateRowValue}/>
+        </div>
           <Menu header={"Columns"} items={ ["6","8","10"]} onValueChange={this.updateColValue}/>
           <Menu header={"Bombs"} items={ ["5","10","30"]} onValueChange={this.updateBombsValue}/>
           <div className="grid">
-            {this.state.status !== "defeat" ? (
+            {this.state.status !== "defeat" && this.state.status !== "victory" ? (
               <Grid columns={this.state.columns} numBombs={this.state.numBombs} rows={this.state.rows} onValueChange={this.updateStatusValue}/>
             ) : (
-              <h1 className="defeat">GAME OVER</h1>
+              <h1 className="status">{this.state.status}</h1>
             )}
           </div>
         </div>

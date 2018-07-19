@@ -12,6 +12,8 @@ interface IGridProps {
 
 interface IGridState {
   cells: Cell[][];
+  numFlags: number;
+  numOpened: number;
 }
 
 class Grid extends React.Component<IGridProps, IGridState> {
@@ -20,12 +22,29 @@ class Grid extends React.Component<IGridProps, IGridState> {
     super(props);
 
     this.state = {
-      cells: this.createBoard([this.props.rows, this.props.columns], this.props.numBombs)
+      cells: this.createBoard([this.props.rows, this.props.columns], this.props.numBombs),
+      numFlags: 0,
+      numOpened: 0,
     };
 
     this.createBoard = this.createBoard.bind(this);
     this.cellClick = this.cellClick.bind(this);
     this.isValidPosition = this.isValidPosition.bind(this);
+    this.numOpened = this.numOpened.bind(this);
+  }
+
+  public numOpened() {
+    const newCells = this.state.cells;
+    let num: number = 0;
+    for(let i = 0; i < this.props.rows; i++) {
+      for(let j = 0; j < this.props.columns; j++) {
+        const cell: Cell = newCells[i][j];
+        if (cell.props.isOpened) {
+          num = num + 1;
+        }
+      }
+    }
+    return num;
   }
 
   public isValidPosition(row: number, column: number) {
@@ -38,7 +57,6 @@ class Grid extends React.Component<IGridProps, IGridState> {
 
   public cellClick(props: any, type: string) {
     const newCells = this.state.cells;
-
     if (type === 'continue') {
       if (!props.hasBomb && !props.isFlagged && !props.isOpened) {
         const oldCell: Cell = newCells[props.row][props.column]
@@ -50,9 +68,10 @@ class Grid extends React.Component<IGridProps, IGridState> {
                                                       numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
-
         this.setState({
           cells: newCells,
+          numFlags: this.state.numFlags,
+          numOpened: this.state.numOpened + 1,
         });
         if (props.numMinesAround === 0 ) {
           for (let i = -1; i <= 1; i++) {
@@ -83,6 +102,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
                                                       row: oldCell.props.row})
         this.setState({
           cells: newCells,
+          numFlags: this.state.numFlags,
         });
         this.props.onValueChange("defeat")
       } else if (!props.hasBomb && !props.isFlagged && !props.isOpened) {
@@ -98,6 +118,7 @@ class Grid extends React.Component<IGridProps, IGridState> {
 
         this.setState({
           cells: newCells,
+          numFlags: this.state.numFlags,
         });
         for (let i = -1; i <= 1; i++) {
           for (let j = -1; j <= 1; j++) {
@@ -124,20 +145,29 @@ class Grid extends React.Component<IGridProps, IGridState> {
                                                       numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
+        this.setState({
+          cells: newCells,
+          numFlags: this.state.numFlags + 1,
+        });
+        const numOpen: number = this.numOpened();
+        if ((this.props.rows * this.props.columns-1) === (numOpen + this.state.numFlags)) {
+          this.props.onValueChange("victory")
+        }
       } else if (props.isFlagged && !props.isOpened) {
         const oldCell: Cell = newCells[props.row][props.column]
         newCells[props.row][props.column] = new Cell({column: oldCell.props.column,
                                                       hasBomb: oldCell.props.hasBomb,
                                                       hasExploded: oldCell.props.hasExploded,
                                                       isFlagged: false,
-                                                      isOpened: oldCell.props.isFlagged,
+                                                      isOpened: false,
                                                       numMinesAround: oldCell.props.numMinesAround,
                                                       onValueChange: this.cellClick,
                                                       row: oldCell.props.row})
+        this.setState({
+          cells: newCells,
+          numFlags: this.state.numFlags - 1,
+        });
       }
-      this.setState({
-        cells: newCells,
-      });
     }
   }
 
