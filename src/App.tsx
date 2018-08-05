@@ -142,6 +142,7 @@ class App extends React.Component<any, IAppState> {
   public render() {
 
     return (
+      <b> Minesweeper </b>
       <div className="App">
         <header className="App-header">
           <div className="App-logo">
