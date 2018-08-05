@@ -42,6 +42,10 @@ class App extends React.Component<any, IAppState> {
     this.updateStatusValue = this.updateStatusValue.bind(this);
   }
 
+  componentWillMount() {
+    document.title = 'Minesweeper'
+  },
+
   public updateStatusValue(newStatus: string) {
     this.setState({
       columns: this.state.columns,
@@ -142,8 +146,8 @@ class App extends React.Component<any, IAppState> {
   public render() {
 
     return (
-      <b> Minesweeper </b>
       <div className="App">
+        <b> Minesweeper </b>
         <header className="App-header">
           <div className="App-logo">
             <img src={logo} className="bomb" alt="logo" />
