@@ -42,7 +42,7 @@ class App extends React.Component<any, IAppState> {
     this.updateStatusValue = this.updateStatusValue.bind(this);
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     document.title = 'Minesweeper'
   }
 
